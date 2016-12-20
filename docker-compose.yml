@@ -1,34 +1,45 @@
 version: "2"
 services:
 
+  urevproxy:
+    container_name: rails-rev
+    image: nginx
+    volumes:
+      - "./nginx/nginx.conf:/etc/nginx/nginx.conf"
+    expose:
+      - "80"
+
+  uredis:
+    container_name: rails-cache
+    image: redis
+    volumes:
+      - "./rails_redis:/var/lib/rails_redis"
+
   udatabase:
-    container_name: rails-mysql
+    container_name: rails-db
     image: mysql
     ulimits:
       nproc: 65535
       nofile:
         soft: 20000
         hard: 40000
-    tty: True
+    environment:
+      MYSQL_ROOT_PASSWORD: "mysql"
+    expose:
+      - "3306"
     volumes:
-      - "./rails_db:/rails_db"
+      - "./rails_db:/var/lib/rails_db"
 
-#  rredis:
-#   images: redis
-#
-#  volumes:
-#    - "./rails_redis:/rails_redis"
-
-
-#  rproxy:
-#    image: nginx
-#    ulimits:
-#      noproc: 65535
-#    volumes:
-#      - "./nginx.conf:/etc/nginx/nginx.conf"
+  uapp:
+    build: uhost_build
 
   uhost:
+    extends:
+      service: uapp
     container_name: uhost
+    env_file:
+      - "./common.env"
+#    command: bundle exec rails s -p 3000 -b '0.0.0.0'
     build: uhost_build
     ulimits:
       nproc: 65535
@@ -37,7 +48,23 @@ services:
         hard: 40000
     tty: True
     links:
-      - udatabase:db
-      - rredis:cache
+      - "urevproxy:rev"
+      - "udatabase:db"
+      - "uredis:cache"
     volumes:
-      - "./rails_app:/rails_app"
+      - "./rails_app:/var/app/rails_app"
+
+  uworker:
+    extends:
+      service: uapp
+    container_name: uworker
+    env_file:
+      - "./common.env"
+    tty: true
+    links:
+      - "urevproxy:rev"
+      - "udatabase:db"
+      - "uredis:cache"
+    volumes:
+      - "./rails_worker:/var/app/rails_worker"
+#    command: bundle exec rails s -p 3000 -b '0.0.0.0'
