@@ -2,5 +2,7 @@ vendor/
 .bundle/
 
 *.swp
+*.bak
+*.old
 *.*~
 *~
