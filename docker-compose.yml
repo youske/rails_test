@@ -43,7 +43,8 @@ services:
     links:
       - "ustorage:storage"
     volumes:
-      - "./vols/data:/var/lib/rails_db"
+      - "./conf/mysql:/etc/mysql/conf.d"
+      - "./vols/data:/var/lib/mysql"
 
   urevproxy:
     container_name: rails-rev
@@ -75,6 +76,8 @@ services:
     container_name: uhost
     ports:
       - "3000:3000"
+    depends_on:
+      - udatabase
     links:
       - "udatabase:db"
       - "uredis:cache"

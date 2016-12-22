@@ -1,0 +1,10 @@
+/app/*
+/cache/*
+/data/*
+/storage/*
+/worker/*
+!/app/.gitkeep
+!/cache/.gitkeep
+!/data/.gitkeep
+!/storage/.gitkeep
+!/worker/.gitkeep

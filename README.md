@@ -10,6 +10,8 @@ http://qiita.com/saito400/items/c7e83db54f2fdc9d145a
 http://qiita.com/oshin/items/0d011610238eb4df83fd
 http://blog.yuuk.io/entry/large-scale-infrastructure
 
+rails nokogiri install error
+https://teratail.com/questions/4837
 
 http://qiita.com/osamtimizer/items/3a241f365c85356394a8
 
@@ -43,3 +45,6 @@ rails_app
 rails_db
 rails_redis
 rails_worker
+
+# ファイルの配置
+uhost:/var/app <- rails app top
